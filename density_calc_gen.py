@@ -6,12 +6,14 @@ import sys
 
 #DIFFERENT TRAFFIC DENSITY DATA
 TRAFFIC = ["EMPTY", "V LIGHT", "LIGHT", "MODERATE", "HIGH", "V HIGH"]
-TRAFFIC_THRESH = [3, 24, 29, 34, 38]
 TRAFFIC_TIME = [0.0, 2.0, 3.0, 4.0, 5.0, 6.0]
 TRAFFIC_COLOR = [(240,240,240), (0,255,0), (0,128,0), (0,69,255), (0,0,128), (0,0,255)]
 
 #Frame rate of input traffic video is 10, please change for different source
 MAX_FPS = 10
+#Space separation for each view window
+VIEW_MARGIN = 20
+WINDOW_TITLE_HEIGHT = 70
 
 # This is to generalize all lanes as they will have different 
 # source, bg, roi and traffic
@@ -99,7 +101,9 @@ while(valid):
 
 		res = cv2.resize(f[i], None, fx=0.5, fy=0.5, interpolation = cv2.INTER_CUBIC)
 
-		cv2.imshow(str(i+1), res)
+		h, w = res.shape[:2]
+		cv2.imshow("Lane: " + str(i+1), res)
+		cv2.moveWindow("Lane: " + str(i+1), int(i%2)*(w+VIEW_MARGIN), int(i/2)*(h+VIEW_MARGIN+WINDOW_TITLE_HEIGHT))
 
 	k = cv2.waitKey(1)
 	if k&255 == 27:
