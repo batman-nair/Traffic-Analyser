@@ -16,22 +16,27 @@ MAX_FPS = 10
 # This is to generalize all lanes as they will have different 
 # source, bg, roi and traffic
 lanes = []
-# lanes.append([SOURCE, BG, X, Y, WIDTH, HEIGHT, TRAFFIC]) to add a lane
-SRC, BG, X, Y, W, H, TR = range(7)
+# To add a lane
+# lanes.append([SOURCE, BG, X, Y, WIDTH, HEIGHT, TRAFFIC_INDEX, THRESH_RANGES]) 
+SRC, BG, X, Y, W, H, TI, TR= range(8)
 
 path = "traffic_video/"
 lanes.append([path+"1.avi", 
 	path+"1_bg.png",
-	450, 0, 100, 540, 0])
+	450, 0, 100, 540, 0,
+	(3, 24, 29, 34, 38)])
 lanes.append([path+"2.avi", 
 	path+"2_bg.png",
-	450, 0, 100, 540, 0])
+	450, 0, 100, 540, 0,
+	(3, 24, 29, 34, 38)])
 lanes.append([path+"3.avi", 
 	path+"3_bg.png",
-	450, 0, 100, 540, 0])
+	450, 0, 100, 540, 0,
+	(3, 24, 29, 34, 38)])
 lanes.append([path+"4.avi", 
 	path+"4_bg.png",
-	450, 0, 100, 540, 0])
+	450, 0, 100, 540, 0,
+	(3, 24, 29, 34, 38)])
 
 no_of_lanes = len(lanes)
 
@@ -80,17 +85,17 @@ while(valid):
 
 		d = diff_density(gray[i], bg[i], lanes[i][X], lanes[i][Y], lanes[i][W], lanes[i][H])
 
-		#Calculate traffic index based on d
-		lanes[i][TR] = 0
-		for t in TRAFFIC_THRESH:
+		#Calculate traffic index based on d comparing with thresholds
+		lanes[i][TI] = 0
+		for t in lanes[i][TR]:
 			if(d > t):
-				lanes[i][TR]+=1
+				lanes[i][TI]+=1
 
 		#Add appropriate traffic message to screen
 		if(green == i):
 			cv2.putText(f[i], str(round(timer,2)), (0,50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,255), 4)
 		else:
-			cv2.putText(f[i], TRAFFIC[lanes[i][TR]], (0,50), cv2.FONT_HERSHEY_SIMPLEX, 1, TRAFFIC_COLOR[lanes[i][TR]], 3)
+			cv2.putText(f[i], TRAFFIC[lanes[i][TI]], (0,50), cv2.FONT_HERSHEY_SIMPLEX, 1, TRAFFIC_COLOR[lanes[i][TI]], 3)
 
 		res = cv2.resize(f[i], None, fx=0.5, fy=0.5, interpolation = cv2.INTER_CUBIC)
 
@@ -119,7 +124,7 @@ while(valid):
 	if(timer <= 0.0):
 		#Green light to next lane
 		green = (green+1)%no_of_lanes
-		timer = TRAFFIC_TIME[lanes[green][TR]]
+		timer = TRAFFIC_TIME[lanes[green][TI]]
 
 	sys.stdout.write("FPS ")
 	sys.stdout.write(str(1/actual_frame_period))
