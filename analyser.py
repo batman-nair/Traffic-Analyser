@@ -1,5 +1,12 @@
+#
+# Traffic Analyser project
+# Calculates green light time for lanes based on traffic density for the lane
+# Created by: Arjun Nair
+# Find the project on GitHub: https://github.com/batman-nair/Traffic-Analyser
+#
+
 import cv2
-import numpy as np 
+import numpy as np
 from diff_density import diff_density
 import time
 import sys
@@ -7,7 +14,12 @@ import sys
 #DIFFERENT TRAFFIC DENSITY DATA
 TRAFFIC = ["EMPTY", "V LIGHT", "LIGHT", "MODERATE", "HIGH", "V HIGH"]
 TRAFFIC_TIME = [0.0, 2.0, 3.0, 4.0, 5.0, 6.0]
-TRAFFIC_COLOR = [(240,240,240), (0,255,0), (0,128,0), (0,69,255), (0,0,128), (0,0,255)]
+TRAFFIC_COLOR = [(240,240,240),
+                 (0,255,0),
+                 (0,128,0),
+                 (0,69,255),
+                 (0,0,128),
+                 (0,0,255)]
 
 #Frame rate of input traffic video is 10, please change for different source
 MAX_FPS = 10
@@ -15,27 +27,28 @@ MAX_FPS = 10
 VIEW_MARGIN = 20
 WINDOW_TITLE_HEIGHT = 70
 
-# This is to generalize all lanes as they will have different 
-# source, bg, roi and traffic
+# This is to generalize all lanes as they will have different
+# source, bg(background), roi(Region of Interest) and traffic(Traffic values and
+# Threshold ranges)
 lanes = []
 # To add a lane
-# lanes.append([SOURCE, BG, X, Y, WIDTH, HEIGHT, TRAFFIC_INDEX, THRESH_RANGES]) 
+# lanes.append([SOURCE, BG, X, Y, WIDTH, HEIGHT, TRAFFIC_INDEX, THRESH_RANGES])
 SRC, BG, X, Y, W, H, TI, TR= range(8)
 
 path = "traffic_video/"
-lanes.append([path+"1.avi", 
+lanes.append([path+"1.avi",
 	path+"1_bg.png",
 	450, 0, 100, 540, 0,
 	(3, 24, 29, 34, 38)])
-lanes.append([path+"2.avi", 
+lanes.append([path+"2.avi",
 	path+"2_bg.png",
 	450, 0, 100, 540, 0,
 	(3, 24, 29, 34, 38)])
-lanes.append([path+"3.avi", 
+lanes.append([path+"3.avi",
 	path+"3_bg.png",
 	450, 0, 100, 540, 0,
 	(3, 24, 29, 34, 38)])
-lanes.append([path+"4.avi", 
+lanes.append([path+"4.avi",
 	path+"4_bg.png",
 	450, 0, 100, 540, 0,
 	(3, 24, 29, 34, 38)])
@@ -85,7 +98,8 @@ while(valid):
 
 		gray[i] = cv2.cvtColor(f[i], cv2.COLOR_BGR2GRAY)
 
-		d = diff_density(gray[i], bg[i], lanes[i][X], lanes[i][Y], lanes[i][W], lanes[i][H])
+		d = diff_density(gray[i], bg[i],
+                   lanes[i][X], lanes[i][Y], lanes[i][W], lanes[i][H])
 
 		#Calculate traffic index based on d comparing with thresholds
 		lanes[i][TI] = 0
@@ -95,17 +109,23 @@ while(valid):
 
 		#Add appropriate traffic message to screen
 		if(green == i):
-			cv2.putText(f[i], str(round(timer,2)), (0,50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,255), 4)
+			cv2.putText(f[i], str(round(timer,2)), (0,50),
+               cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0,255,255), 4)
 		else:
-			cv2.putText(f[i], TRAFFIC[lanes[i][TI]], (0,50), cv2.FONT_HERSHEY_SIMPLEX, 1, TRAFFIC_COLOR[lanes[i][TI]], 3)
+			cv2.putText(f[i], TRAFFIC[lanes[i][TI]], (0,50),
+               cv2.FONT_HERSHEY_SIMPLEX, 1, TRAFFIC_COLOR[lanes[i][TI]], 3)
 
-		res = cv2.resize(f[i], None, fx=0.5, fy=0.5, interpolation = cv2.INTER_CUBIC)
+		res = cv2.resize(f[i], None, fx=0.5, fy=0.5,
+                   interpolation = cv2.INTER_CUBIC)
 
 		h, w = res.shape[:2]
 		cv2.imshow("Lane: " + str(i+1), res)
-		cv2.moveWindow("Lane: " + str(i+1), int(i%2)*(w+VIEW_MARGIN), int(i/2)*(h+VIEW_MARGIN+WINDOW_TITLE_HEIGHT))
+		cv2.moveWindow("Lane: " + str(i+1),
+                 int(i%2)*(w+VIEW_MARGIN),
+                 int(i/2)*(h+VIEW_MARGIN+WINDOW_TITLE_HEIGHT))
 
 	k = cv2.waitKey(1)
+    # ESC to stop at any time
 	if k&255 == 27:
 		break
 
