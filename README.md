@@ -6,10 +6,5 @@ Requires Python, OpenCV, numpy
 ## How to run
 `python density_calc_gen.py`
 
-## Screenshots
-
-![Screenshot1](screenshots/Traffic-Analyser1.png)
-
-![Screenshot2](screenshots/Traffic-Analyser2.png)
-
-![Screenshot3](screenshots/Traffic-Analyser3.png)
+#### Video link
+[![Youtube Link](https://img.youtube.com/vi/5PkaM4Uewos/0.jpg)](https://www.youtube.com/watch?v=5PkaM4Uewos)
