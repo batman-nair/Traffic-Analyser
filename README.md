@@ -1,5 +1,7 @@
 # Traffic-Analyser
-Calculate green light timer using density calculation through image processing
+Control the flow of traffic based on traffic density of vehicles on each lane.
+
+Traffic flow is controlled by using variable traffic light timers for each lane. The timers are set based on the traffic density on that lane. The traffic density is measured by using image processing on lane traffic camera video. 
 
 Requires Python, OpenCV, numpy
 
